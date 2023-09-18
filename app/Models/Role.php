@@ -9,9 +9,9 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'modules', 'description'];
+    protected $fillable = ['name', 'pages', 'description'];
     protected $casts = [
-        'modules' => 'array',
+        'pages' => 'array',
     ];
 
     public function setNameAttribute($value)

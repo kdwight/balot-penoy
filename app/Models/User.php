@@ -13,12 +13,15 @@ class User extends Authenticatable
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $hidden = ['password', 'remember_token'];
-    protected $casts = [
-        'status' => 'boolean'
-    ];
+    protected $casts = ['status' => 'boolean'];
 
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
     }
 }
