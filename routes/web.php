@@ -1,26 +1,34 @@
 <?php
 
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return inertia('Welcome', [
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => inertia('Dashboard', [
+        'todos' => auth()->user()->todos
+    ]))->name('dashboard');
+
+    Route::prefix('todos')->name('todos.')->middleware(['todos_access'])->group(function () {
+        Route::get('/', [TodoController::class, 'index'])->name('index');
+        Route::post('store', [TodoController::class, 'store'])->name('store');
+        Route::patch('{todo}/complete', [TodoController::class, 'toggleStatus'])->name('status');
+    });
 
     Route::middleware(['is_admin'])->group(function () {
         Route::prefix('users')->name('users.')->middleware(['is_admin'])->group(function () {
-            Route::inertia('/', 'Users/Index')->name('index');
+            Route::get('/', [UserController::class, 'index'])->name('index');
             Route::post('store', [UserController::class, 'store'])->name('store');
-            Route::put('update', [UserController::class, 'update'])->name('update');
-            Route::patch('{user}/status', [UserController::class, 'status']);
+            Route::put('{user}/update', [UserController::class, 'update'])->name('update');
+            Route::delete('{user}/delete', [UserController::class, 'destroy'])->name('destroy');
             Route::get('list', [UserController::class, 'list'])->name('list');
         });
     });

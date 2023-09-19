@@ -2,56 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function list()
+    public function index()
     {
-        abort_unless(request()->wantsJson(), 404);
-
-        $query = User::with('role:name');
-
-        return JsonResource::collection($query->get());
+        return inertia('Users/Index', ['roles' => Role::get()]);
     }
 
-    public function store()
+    public function store(UserRequest $request)
     {
-        User::create($this->validateUser());
+        User::create($request->validated());
 
         return response()->json(['success' => 'User Created!'], 200);
     }
 
-    public function update(User $user)
+    public function update(UserRequest $request, User $user)
     {
-        $user->update($this->validateUser($user));
+        $user->update($request->validated());
 
-        return response()->json(['success', 'User Updated!'], 200);
+        return response()->json(['success' => 'User Updated!'], 200);
     }
 
     public function destroy(User $user)
     {
         $user->delete();
 
-        return back()->with('success', 'User Deleted!');
+        return response()->json(['success' => 'User Deleted!']);
     }
 
-    protected function validateUser(?User $user = null): array
+    public function list()
     {
-        $user ??= new User();
+        abort_unless(request()->wantsJson(), 404);
 
-        $rules = [
-            'username' => ['required', 'string', 'min:5', 'max:20'],
-            'email' => ['required', Rule::unique('users', 'email')->ignore($user)],
-            'password' => ['required', 'string', 'min:8'],
-        ];
+        $query = User::with(['role:id,name']);
 
-        if (request()->has('role_id')) {
-            $rules['role_id'] = ['required', Rule::exists('roles', 'id')];
-        }
-
-        return request()->validate($rules);
+        return JsonResource::collection($query->get());
     }
 }
