@@ -15,13 +15,29 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        \App\Models\User::factory(1)->create([
+        $user = \App\Models\User::factory()->create([
             'role_id' => 1,
             'username' => 'balotpenoy',
             'email' => 'admin@balot.penoy',
         ]);
 
-        \App\Models\User::factory(15)->create([
+        $todo = $user->todos()->create([
+            'title' => 'Admin first task',
+        ]);
+
+        /* collect(['foo', 'bar', 'baz'])->each(function ($title) use ($todo) {
+            $todo->items()->create([
+                'title' => $title
+            ]);
+        }); */
+
+        $todo->items()->createMany([
+            ['title' => 'foo', 'completed' => NOW()],
+            ['title' => 'bar', 'target_date' => "2024-01-01"],
+            ['title' => 'baz'],
+        ]);
+
+        \App\Models\User::factory(5)->create([
             'role_id' => null
         ]);
     }
