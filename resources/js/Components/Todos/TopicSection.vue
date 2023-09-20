@@ -30,6 +30,10 @@ function showToast(msg) {
   Inertia.reload();
 }
 
+function removeItem(index) {
+  tasks.value.splice(index, 1);
+}
+
 onMounted(() => {
   expanded.value = props.isExpanded;
 });
@@ -62,7 +66,14 @@ onMounted(() => {
       </div>
 
       <ul class="divide-y space-y-2" v-show="expanded">
-        <TaskItem v-for="(item, index) in tasks" :key="index" :topic="props.topic" :item="item" @success="showToast" />
+        <TaskItem
+          v-for="(item, index) in tasks"
+          :key="index"
+          :topic="props.topic"
+          :item="item"
+          @success="showToast"
+          @remove-item="removeItem(index)"
+        />
       </ul>
 
       <div class="flex justify-end gap-2 mt-3">

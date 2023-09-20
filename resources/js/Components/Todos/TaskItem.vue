@@ -9,7 +9,7 @@ const props = defineProps({
   item: Object,
 });
 
-const emit = defineEmits(["success"]);
+const emit = defineEmits(["success", "remove-item"]);
 
 const isEditting = ref(false);
 const isNewItem = computed(() => !Object.hasOwn(props.item, "id"));
@@ -62,6 +62,14 @@ function saveItem() {
     .catch(({ response }) => (form.errors = response.data.errors));
 }
 
+function closeEditForm() {
+  isEditting.value = !isEditting.value;
+
+  if (isNewItem.value) {
+    emit("remove-item");
+  }
+}
+
 onMounted(() => {
   if (isNewItem.value) {
     form.fields = props.item;
@@ -73,7 +81,7 @@ onMounted(() => {
 <template>
   <li :class="['pt-2', { 'hover:bg-slate-200': !isEditting }]">
     <div :class="['flex items-center', { 'text-green-500': props.item.completed }]">
-      <!-- edit form -->
+      <!-- form -->
       <template v-if="isEditting">
         <div class="w-full flex gap-2 ml-5">
           <!-- title -->
@@ -117,9 +125,10 @@ onMounted(() => {
       </template>
     </div>
 
+    <!-- form cta -->
     <div class="mt-2 ml-5 flex items-center gap-2 text-xs">
       <template v-if="isEditting">
-        <button class="hover:underline" @click="isEditting = !isEditting">close</button>
+        <button class="hover:underline" @click="closeEditForm">close</button>
         <button class="hover:underline text-cyan-600" @click="saveItem">save</button>
       </template>
 
