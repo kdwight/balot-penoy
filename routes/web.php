@@ -17,13 +17,17 @@ Route::middleware(['auth'])->group(function () {
         'todos' => auth()->user()->todos
     ]))->name('dashboard');
 
-    Route::prefix('todos')->name('todos.')->middleware(['todos_access'])->group(function () {
-        Route::get('/', [TodoController::class, 'index'])->name('index');
+    Route::prefix('todos')->name('todos.')->group(function () {
         Route::post('store', [TodoController::class, 'store'])->name('store');
-        Route::patch('{item}/complete', [TodoController::class, 'toggleStatus'])->name('status');
+        Route::delete('{todo}/destroy', [TodoController::class, 'destroy'])->name('delete');
         Route::post('{todo}/store-item', [TodoController::class, 'storeItem'])->name('store-item');
         Route::put('{item}/update-item', [TodoController::class, 'updateItem'])->name('update-item');
         Route::delete('{item}/delete-item', [TodoController::class, 'destroyItem'])->name('delete-item');
+        Route::patch('{item}/complete', [TodoController::class, 'toggleStatus'])->name('status');
+
+        Route::middleware(['todos_access'])->group(function () {
+            Route::get('/', [TodoController::class, 'index'])->name('index');
+        });
     });
 
     Route::middleware(['is_admin'])->group(function () {

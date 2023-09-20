@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import Toast from "@/Components/Toast.vue";
 import TaskItem from "@/Components/Todos/TaskItem";
 import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 const props = defineProps({
   topic: {
@@ -34,6 +35,13 @@ function removeItem(index) {
   tasks.value.splice(index, 1);
 }
 
+function deleteTodo(user) {
+  axios.delete(route("todos.delete", { todo: props.topic.id })).then(({ data }) => {
+    successMsg.value = data.success;
+    Inertia.reload();
+  });
+}
+
 onMounted(() => {
   expanded.value = props.isExpanded;
 });
@@ -48,9 +56,9 @@ onMounted(() => {
       >
         <h6 class="font-bold" v-text="props.topic.title"></h6>
         <span class="text-xs ml-1 underline" v-if="Object.hasOwn(props.topic, 'author')">
-          {{ props.topic.author.username }} ✍️
+          ✍️ {{ props.topic.author.username }}
         </span>
-
+        <button class="text-xs text-red-500 border-l-2 border-red-400 ml-2 pl-2" @click="deleteTodo">delete</button>
         <button class="ml-auto">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +84,7 @@ onMounted(() => {
         />
       </ul>
 
-      <div class="flex justify-end gap-2 mt-3">
+      <div class="flex justify-end gap-2 mt-3" v-if="expanded">
         <button type="button" class="text-xs underline" @click.prevent="addItem()">+ add item</button>
         <button type="button" class="text-xs underline" @click.prevent="addItem({ target_date: '' })">
           + add item with date

@@ -29,6 +29,13 @@ class TodoController extends Controller
         return response()->json(['success' => 'Tasks Created'], 200);
     }
 
+    public function destroy(Todo $todo)
+    {
+        $todo->delete();
+
+        return response()->json(['success' => 'Todo Deleted!']);
+    }
+
     public function storeItem(TodoItemRequest $request, Todo $todo)
     {
         $validated = $request->validated();
