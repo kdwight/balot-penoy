@@ -23,15 +23,11 @@ function checkDeadline(date) {
 function toggleStatus(item) {
   axios
     .patch(route("todos.status", { item }), { completed: !item.completed })
-    .then(({ data }) => emit("success", data.success))
-    .catch(({ response }) => console.log(response));
+    .then(() => Inertia.visit(route("dashboard")));
 }
 
 function deleteTodo(item) {
-  axios.delete(route("todos.delete-item", { item })).then(({ data }) => {
-    Inertia.reload();
-    emit("success", data.success);
-  });
+  axios.delete(route("todos.delete-item", { item })).then(() => Inertia.visit(route("dashboard")));
 }
 
 const form = reactive({
