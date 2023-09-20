@@ -1,6 +1,8 @@
 <script setup>
-import { Inertia } from "@inertiajs/inertia";
 import { onMounted, ref } from "vue";
+import Toast from "@/Components/Toast.vue";
+import TaskItem from "@/Components/Todos/TaskItem";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
   topic: {
@@ -11,12 +13,21 @@ const props = defineProps({
 });
 
 const expanded = ref(true);
+const successMsg = ref("");
 
-function toggleStatus(item) {
-  axios
-    .patch(route("todos.status", { todo: item.id }), { completed: !item.completed })
-    .then(({ data }) => Inertia.reload())
-    .catch(({ response }) => console.log(response));
+const tasks = ref(props.topic.items);
+
+function addItem(additional) {
+  tasks.value.push({
+    title: "",
+    ...additional,
+  });
+}
+
+function showToast(msg) {
+  successMsg.value = msg;
+
+  Inertia.reload();
 }
 
 onMounted(() => {
@@ -27,13 +38,16 @@ onMounted(() => {
 <template>
   <section class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-3 first:mt-0">
     <div class="p-6 bg-white border-b border-gray-200">
-      <div :class="['flex items-center', { 'p-2 mb-6 rounded-lg shadow-md bg-stone-200': expanded }]">
+      <div
+        :class="['flex items-center', { 'p-2 mb-6 rounded-lg shadow-md bg-stone-200': expanded }]"
+        @click="expanded = !expanded"
+      >
         <h6 class="font-bold" v-text="props.topic.title"></h6>
         <span class="text-xs ml-1 underline" v-if="Object.hasOwn(props.topic, 'author')">
           {{ props.topic.author.username }} ✍️
         </span>
 
-        <button class="ml-auto" @click="expanded = !expanded">
+        <button class="ml-auto">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -48,20 +62,17 @@ onMounted(() => {
       </div>
 
       <ul class="divide-y space-y-2" v-show="expanded">
-        <li v-for="item in topic.items" :key="item.id">
-          <div :class="['flex items-center', { 'text-green-500': item.completed }]">
-            {{ item.title }}
-
-            <div class="flex items-center gap-2 ml-auto text-xs">
-              <button :class="item.completed ? 'text-red-500' : 'text-blue-500'" @click="toggleStatus(item)">
-                {{ item.completed ? "🟢" : "◯" }}
-              </button>
-            </div>
-          </div>
-
-          <span class="text-xs text-violet-400">{{ item.target_date }}</span>
-        </li>
+        <TaskItem v-for="(item, index) in tasks" :key="index" :topic="props.topic" :item="item" @success="showToast" />
       </ul>
+
+      <div class="flex justify-end gap-2 mt-3">
+        <button type="button" class="text-xs underline" @click.prevent="addItem()">+ add item</button>
+        <button type="button" class="text-xs underline" @click.prevent="addItem({ target_date: '' })">
+          + add item with date
+        </button>
+      </div>
     </div>
+
+    <Toast :message="successMsg" @clear-msg="successMsg = ''" />
   </section>
 </template>

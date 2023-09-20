@@ -54,8 +54,12 @@ function closeModal() {
     New List 📝
   </button>
 
-  <section class="fixed inset-0 flex items-center justify-center bg-black/40" v-show="form.modal" @click="closeModal">
-    <div class="bg-white rounded-lg p-4 w-full max-w-lg shadow-lg" @click.stop>
+  <section
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+    v-show="form.modal"
+    @click="closeModal"
+  >
+    <div class="bg-white rounded-lg mx-4 p-4 w-full max-w-lg shadow-lg" @click.stop>
       <div class="flex justify-between">
         <p>Create</p>
 

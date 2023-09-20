@@ -20,7 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('todos')->name('todos.')->middleware(['todos_access'])->group(function () {
         Route::get('/', [TodoController::class, 'index'])->name('index');
         Route::post('store', [TodoController::class, 'store'])->name('store');
-        Route::patch('{todo}/complete', [TodoController::class, 'toggleStatus'])->name('status');
+        Route::patch('{item}/complete', [TodoController::class, 'toggleStatus'])->name('status');
+        Route::post('{todo}/store-item', [TodoController::class, 'storeItem'])->name('store-item');
+        Route::put('{item}/update-item', [TodoController::class, 'updateItem'])->name('update-item');
+        Route::delete('{item}/delete-item', [TodoController::class, 'destroyItem'])->name('delete-item');
     });
 
     Route::middleware(['is_admin'])->group(function () {

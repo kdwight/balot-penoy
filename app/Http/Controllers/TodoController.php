@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TodoItemRequest;
 use App\Http\Requests\TodoRequest;
 use App\Models\Todo;
 use App\Models\TodoItem;
@@ -17,21 +18,48 @@ class TodoController extends Controller
 
     public function store(TodoRequest $request)
     {
-        $attr = $request->validated();
+        $validated = $request->validated();
 
         $authenticated = auth()->user();
 
-        $todo = $authenticated->todos()->create(collect($attr)->only('title')->toArray());
+        $todo = $authenticated->todos()->create(collect($validated)->only('title')->toArray());
 
-        $todo->items()->createMany($attr['items']);
+        $todo->items()->createMany($validated['items']);
 
-        return response()->json(['success' => 'Success'], 200);
+        return response()->json(['success' => 'Tasks Created'], 200);
     }
 
-    public function toggleStatus(TodoItem $todo)
+    public function storeItem(TodoItemRequest $request, Todo $todo)
     {
-        $todo->update(['completed' => request('completed') ? now() : null]);
+        $validated = $request->validated();
 
-        return response(['success' => 'Status has been updated.'], 200);
+        $todo->items()->create($validated);
+
+        return response()->json(['success' => 'Task Updated'], 200);
+    }
+
+    public function updateItem(TodoItemRequest $request, TodoItem $item)
+    {
+        $validated = $request->validated();
+
+        $item->update($validated);
+
+        return response()->json(['success' => 'Task Updated'], 200);
+    }
+
+    public function destroyItem(TodoItem $item)
+    {
+        $item->delete();
+
+        return response()->json(['success' => 'Task Deleted!']);
+    }
+
+    public function toggleStatus(TodoItem $item)
+    {
+        $validated = request()->validate(['completed' => 'required']);
+
+        $item->update(['completed' => $validated['completed'] ? now() : null]);
+
+        return response(['success' => 'Task Status Updated!'], 200);
     }
 }
