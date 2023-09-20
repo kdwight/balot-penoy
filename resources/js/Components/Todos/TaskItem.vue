@@ -55,9 +55,8 @@ function saveItem() {
     : route("todos.update-item", { item: props.item.id });
 
   axios[method](endpoint, form.fields)
-    .then(({ data }) => {
-      Inertia.reload();
-      emit("success", data.success);
+    .then(() => {
+      Inertia.visit(route("dashboard"));
       isEditting.value = false;
     })
     .catch(({ response }) => (form.errors = response.data.errors));
@@ -74,27 +73,39 @@ onMounted(() => {
 <template>
   <li :class="['pt-2', { 'hover:bg-slate-200': !isEditting }]">
     <div :class="['flex items-center', { 'text-green-500': props.item.completed }]">
+      <!-- edit form -->
       <template v-if="isEditting">
         <div class="w-full flex gap-2 ml-5">
-          <BreezeInput type="text" class="w-full" placeholder="Add list todo items..." v-model="form.fields.title" />
-          <BreezeInput
-            v-if="Object.hasOwn(props.item, 'target_date')"
-            type="date"
-            :min="new Date().toISOString().slice(0, 10)"
-            v-model="form.fields.target_date"
-          />
+          <!-- title -->
+          <div class="flex-1">
+            <BreezeInput type="text" class="w-full" placeholder="Add list todo items..." v-model="form.fields.title" />
+            <BreezeInputError :message="form.errors.title?.[0] ?? null" />
+          </div>
+          <!-- date -->
+          <div v-if="!isNewItem && props.item.target_date">
+            <BreezeInput
+              v-if="Object.hasOwn(props.item, 'target_date')"
+              type="date"
+              :min="new Date().toISOString().slice(0, 10)"
+              v-model="form.fields.target_date"
+            />
+            <BreezeInputError :message="form.errors.target_date?.[0] ?? null" />
+          </div>
         </div>
       </template>
 
       <template v-else>
+        <!-- check / uncheck -->
         <div class="flex items-center gap-2 mr-2 text-xs">
           <button :class="props.item.completed ? 'text-red-500' : 'text-blue-500'" @click="toggleStatus(item)">
             {{ props.item.completed ? "🟢" : "◯" }}
           </button>
         </div>
 
+        <!-- title -->
         <p>{{ props.item.title }}</p>
 
+        <!-- date -->
         <span
           :class="[
             'ml-auto text-xs',
