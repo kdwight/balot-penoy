@@ -36,7 +36,7 @@ function submitForm() {
     .then(({ data }) => {
       closeModal();
       form.successMsg = data.success;
-      Inertia.reload();
+      Inertia.visit(route("dashboard"));
     })
     .catch(({ response }) => (form.errors = response.data.errors))
     .finally(() => (form.processing = false));

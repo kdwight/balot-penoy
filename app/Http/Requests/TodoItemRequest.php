@@ -13,7 +13,7 @@ class TodoItemRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return (auth()->id() == $this->user()->id) || in_array('todos', array_column(auth()->user()->role->pages ?? [], 'name'));
     }
 
     /**

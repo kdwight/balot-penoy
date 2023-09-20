@@ -56,7 +56,7 @@ onMounted(() => {
       >
         <h6 class="font-bold" v-text="props.topic.title"></h6>
         <span class="text-xs ml-1 underline" v-if="Object.hasOwn(props.topic, 'author')">
-          ✍️ {{ props.topic.author.username }}
+          ✍️{{ props.topic.author.username }}
         </span>
         <button class="text-xs text-red-500 border-l-2 border-red-400 ml-2 pl-2" @click="deleteTodo">delete</button>
         <button class="ml-auto">

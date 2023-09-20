@@ -19375,7 +19375,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         var data = _ref2.data;
         closeModal();
         form.successMsg = data.success;
-        _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.reload();
+        _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.visit(route("dashboard"));
       })["catch"](function (_ref3) {
         var response = _ref3.response;
         return form.errors = response.data.errors;
@@ -20927,7 +20927,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", {
     "class": "font-bold",
     textContent: (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.props.topic.title)
-  }, null, 8 /* PROPS */, _hoisted_3), Object.hasOwn($setup.props.topic, 'author') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_4, " ✍️ " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.props.topic.author.username), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, null, 8 /* PROPS */, _hoisted_3), Object.hasOwn($setup.props.topic, 'author') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_4, " ✍️" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.props.topic.author.username), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "text-xs text-red-500 border-l-2 border-red-400 ml-2 pl-2",
     onClick: $setup.deleteTodo
   }, "delete"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", _hoisted_5, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("svg", {
