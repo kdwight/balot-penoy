@@ -85,14 +85,19 @@ onMounted(() => {
       <template v-if="isEditting">
         <div class="w-full flex gap-2 ml-5">
           <!-- title -->
-          <div class="flex-1">
+          <div class="w-full">
             <BreezeInput type="text" class="w-full" placeholder="Add list todo items..." v-model="form.fields.title" />
             <BreezeInputError :message="form.errors.title?.[0] ?? null" />
           </div>
+
           <!-- date -->
-          <div v-if="!isNewItem && props.item.target_date">
+          <div
+            class="flex-1"
+            v-if="(!isNewItem && props.item.target_date) || (isNewItem && Object.hasOwn(props.item, 'target_date'))"
+          >
             <BreezeInput
               v-if="Object.hasOwn(props.item, 'target_date')"
+              class="w-full"
               type="date"
               :min="new Date().toISOString().slice(0, 10)"
               v-model="form.fields.target_date"
