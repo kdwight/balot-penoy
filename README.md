@@ -1,5 +1,27 @@
 # Balot Penoy
 
+`factory.foo.create(5, { status: "private" });`
+
+
+```factory.foo.create(5, { status: "private" });```
+
+
+```js
+factory.foo.create(5, { status: "private" });
+```
+
+
+```js
+[
+    {
+        "title": "foo bar baz",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "status": "private"
+    },
+    ...
+]
+```
+
 ## Stack
 
 - Laravel 8
